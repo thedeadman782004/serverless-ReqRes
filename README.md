@@ -2,7 +2,7 @@
 
 A lightweight (5kb) "ExpressJS like" Request and Response handler (with plugin support) for AWS lambda functions.
 
-Please review [Our Serverless Best Practices](#serverless-best-practices]) to speed up (or eliminate ) cold starts, reduce memory usage, and overall speed up requests, by separating your endpoints into separate lambda functions rather than handling everything in one route.
+Please review [Our Serverless Best Practices](#serverless-best-practices]) to speed up (or eliminate) cold starts, reduce memory usage and overall speed up requests by separating your endpoints into separate lambda functions rather than handling everything in one route.
 
 ## Getting Started
 
@@ -91,7 +91,7 @@ callback(null,{
   * [res.error](#reserror-javacript-error---or--reserror-object-)
   * [res.raw](#resraw-mixed-)
 - [Serverless Best Practices](#serverless-best-practices)
-    + [Keep Your Lambda Functions as Small as Possable](#keep-your-lambda-functions-as-small-as-possable)
+    + [Keep Your Lambda Functions as Small as Possible](#keep-your-lambda-functions-as-small-as-possible)
       - [Minify Your Lambda Functions](#minify-your-lambda-functions)
       - [Scope your require() (or import) inside your handler(s)](#scope-your-require----or-import--inside-your-handler-s-)
     + [Split Logic out of the Handler's Requests/Responses](#split-logic-out-of-the-handler-s-requests-responses)
@@ -200,10 +200,10 @@ try{
 
 
 ### use .finally([mainFunctionReturn]) to run after main reqRes function
-.finally() is not recommended, but can be used to close anything after the main reqres callback has been called
-any value returned in the main reqres function will be passed to the finally function as the first parameter
+.finally() is not recommended, but can be used to close anything after the main reqres callback has been called.
+Any value returned in the main reqres function will be passed to the finally function as the first parameter
 
-Note that req and res are not being sent as it is recommended you handle your response inside the main function. If req is necessary you can always return it in your main function
+Note that req and res are not being sent as it is recommended you handle your response inside the main function. If req is necessary you can always return it in your main function.
 
 Here is an example of closing a db connection after sending a success
 ```javascript
@@ -279,7 +279,7 @@ Exmaple of how to then run plugins and before
 ```javascript
 let reqResHandler = reqRes((req,res)=>{
   //use first pugin to get req.user  
-  res.send("hello! "+req.user.firstName + " it's now "+req.now )
+  res.send("hello! " + req.user.firstName + " it's now " + req.now )
 })
 //set req.now for only this function
 .before((req, res, rawServerlessEvent)=>{
@@ -287,11 +287,11 @@ let reqResHandler = reqRes((req,res)=>{
 })
 .plugins([
   authUserPlugin,
-    handelNotFoundPlugin
+    handleNotFoundPlugin
 ])
 //catch a plugin rejectcion
 .catch((errors ,req,res, rawServerlessEvent)=>{
-  //use second plugin to catch an error (first plugin rejected it's promise)
+  //use second plugin to catch an error (first plugin rejected its promise)
   res.notFound("User Not Found")
 })
 ```
@@ -344,7 +344,7 @@ Returns
     ]
 }
 ```
-Plugins support Promise.all by wrapping  the plugin  functions in another array
+Plugins support Promise.all by wrapping the plugin functions in another array
 ```javascript
 .plugins([
      asyncPlug1,
@@ -359,7 +359,7 @@ Will run in this order:
 4. call main ReqRes callback
 
 ### Global Plugins
-Global plugins will run  before any befores and your main ReqRes function. The same waterfall rules as the plugin function (defined above) still apply.
+Global plugins will run  before any before()s and your main ReqRes function. The same waterfall rules as the plugin function (defined above) still apply.
 
 Please review [ReqRes Global Plugins](#reqres-global-plugins) for best practice for using global plugins in larger code bases.
 
@@ -383,7 +383,7 @@ reqRes("plugin","plugin1", (req,res,rawServerlessEvent)=>{
 })
 ```
 
-A Promse.all async plugin
+A Promise.all async plugin
 
 ```javascript
 reqRes("plugin", "plugin2",
@@ -402,10 +402,10 @@ reqRes("plugin", "plugin2",
       },
   ]
 )
-//note after promse.all req.stack will be "12"
+//note after promise.all req.stack will be "12"
 ```
 
-Running a reqRes function will result in both plugins running automatically in the order the where defined and with waterfall support.
+Running a reqRes function will result in both plugins running automatically in the order they were defined and with waterfall support.
 ```javascript
 reqRes((req,res)=>{
 	//sends {works:true} (req.stack is undefined as it was excluded)
@@ -415,7 +415,7 @@ reqRes((req,res)=>{
 Returns: ``` {works:true, stack:"12"} ```
 
 #### Filtering Global Plugins Per ReqRes request
-It is possable to filter global plugins for a single request with the plugins function or the excludePlugins funtion
+It is possible to filter global plugins for a single request with the plugins function or the excludePlugins funtion
 
 **EX:**  Only run plugin1 (defined above) using the plugins function with an array of plugin names (as strings)
 ```javascript
@@ -502,15 +502,15 @@ In examples shown with 'rawServerlessEvent' ([constructor](#constructor), [befor
 
 [reqRes.before(Callback|Object)](#before) runs a callback before main function
 
-[reqRes.finally(Callback)](#finally) runs a callback after main function has ran
+[reqRes.finally(Callback)](#finally) runs a callback after main function has run
 
 [reqRes.catch(Callback)](#catch) catch plugin or .before errors along with your main [constructor function](#constructor)
 
-[reqRes.context(Object)](#context) set raw serverless contex
+[reqRes.context(Object)](#context) set raw serverless context
 
 [reqRes.event(Object)](#event)  set raw serverless event
 
-[reqRes.run(rawServerlessEvent, rawServerlessContex, rawServerlessCallback)](#run) handle raw serverless function call
+[reqRes.run(rawServerlessEvent, rawServerlessContext, rawServerlessCallback)](#run) handle raw serverless function call
 
 ## Constructor
 
@@ -524,9 +524,9 @@ var reqResHandler = reqRes(
 );
 ```
 
-On serverless request, this 'constructor callback' will run after all [.before()](#before) and plugins have ran.
+On serverless request, this 'constructor callback' will run after all [.before()](#before) and plugins have run.
 
-[Req](#req-object) Stores lambad request (headers, query parameters, url parameters...)
+[Req](#req-object) Stores lambda request (headers, query parameters, url parameters...)
 
 [Res](#res-object) Handle a response (json,jsonp,text,redritcs...)
 
@@ -538,7 +538,7 @@ On serverless request, this 'constructor callback' will run after all [.before()
 ```javascript
 //fake auth plugin
 let authplugin = (req, res, rawServerlessEvent)=>{
-  return new Promise((fullfill, reject)=>{
+  return new Promise((fulfill, reject)=>{
       getUser(req.headers.token).then((user)=>{
         req.user = user
         fulfill()
@@ -564,7 +564,7 @@ Global plugins will run first (in order they where created) on every request, un
 //first param is string name of your plugin,
 //second param is the callback to run apon a ReqRes request
 reqRes("plugin", "fakeAuth", (req, res, rawServerlessEvent)=>{
-  return new Promise((fullfill, reject)=>{
+  return new Promise((fulfill, reject)=>{
       getUser(req.headers.token).then((user)=>{
         req.user = user
         fulfill()
@@ -579,7 +579,7 @@ reqRes("plugin", "fakeAuth", (req, res, rawServerlessEvent)=>{
 
 
 #### Including Only selected Global plugins
-you can use plugins function to only run plugins passed by an array of strings
+You can use plugins function to only run plugins passed by an array of strings
 ```javascript
 reqResHandler.plugins(["pluginNmae1", "pluginName2"]);
 ```
@@ -589,7 +589,7 @@ To exclude global functions pass a string array of plugin names to exclude them 
 ```javascript
 yourReqResHandler.excludePlugins(["fakeAuth"]);
 ```
-**Note:** Plugins are not chanable and return undefined. You cannot use .before or any of the fallowing functions
+**Note:** Plugins are not chainable and return undefined. You cannot use .before or any of the fallowing functions
 
 ## before
 ```javascript
@@ -600,7 +600,7 @@ reqResHandler.before((req,res,rawServerlessEvent)=>{
 Chainable Functions  to run (synchronously) before main function
 > **Type:** Function
 >
-> **Param 'Callback':** Function to run before your main function (usefull for exdending the req or res objects)
+> **Param 'Callback':** Function to run before your main function (useful for exdending the req or res objects)
 >
 > **Returns:** resReq
 
@@ -640,14 +640,14 @@ Example:
 ## finally
 ```javascript
 reqResHandler.finally((db)=>{
- db.colse()
+ db.close()
 })
 ```
 Chainable Functions  to run (synchronously) after main function
-the first parameter in the callback is what ever the main reqres callback returns
+The first parameter in the callback is whatever the main reqres callback returns
 > **Type:** Function
 >
-> **Param 'Callback':** Function to run before your main function (usefull for exdending the req or res objects)
+> **Param 'Callback':** Function to run before your main function (useful for exdending the req or res objects)
 >
 > **Returns:** resReq
 
@@ -691,7 +691,7 @@ returns
 Catch all .before() and plugin errors and then your [constructor function](#constructor)
 > **Type:** Function
 >
-> **Param 'Callback':** Function that runs (after all befores have ran) and one or more befores threw a Promse reject   
+> **Param 'Callback':** Function that runs (after all befores have ran) and one or more befores threw a Promise reject   
 >
 > **Returns:** resReq
 Example
@@ -708,7 +708,7 @@ set defulats for the serverless context befure .run
 >
 > **Param 'contex':** If set, it will update the context
 >
-> **Returns:** contex (if parameters are empty) or undefined
+> **Returns:** context (if parameters are empty) or undefined
 
 ## event
 ```javascript
@@ -724,8 +724,8 @@ set defulats for the serverless event befure .run
 
 ## run
 ```javascript
-var standerdHandler = (event, contex, callback)=>{
-  rewReq.run(event, contex, callback)
+var standerdHandler = (event, context, callback)=>{
+  rewReq.run(event, context, callback)
 }
 ```
 Handles the raw serverless request (must be the last function in a ReqRes method chain)
@@ -733,7 +733,7 @@ Handles the raw serverless request (must be the last function in a ReqRes method
 >
 > **Param 'event':**  serverless's request event
 >
-> **Param 'contex':**  serverless's contex
+> **Param 'contex':**  serverless's context
 >
 > **Param 'callback':** the serverless function to output
 >
@@ -746,7 +746,7 @@ Handles the raw serverless request (must be the last function in a ReqRes method
 
 > **Type:** Object
 >
-> **Returns:** a key value pairs of query parameters
+> **Returns:** a key value pair of query parameters
 
 ## req.body
 
@@ -758,19 +758,19 @@ Handles the raw serverless request (must be the last function in a ReqRes method
 
 > **Type:** Object
 >
-> **Returns:** a key value pairs of url query parameters
+> **Returns:** a key value pair of url query parameters
 
 ## req.path
 
 > **Type:** Object
 >
-> **Returns:** a key value pairs of url path parameters
+> **Returns:** a key value pair of url path parameters
 
 ## req.headers
 
 > **Type:** Object
 >
-> **Returns:** a key value pairs of request headers
+> **Returns:** a key value pair of request headers
 
 
 
@@ -790,9 +790,9 @@ Get and Set the headers
 
 ## res.end()
 
-When Called this will stop any future before()s, plugins, or the main callback
+When called this will stop any future before()s, plugins, or the main callback
 
-If data has not been send yet (ex: res.send, res.json ect. (defined below) has not been called) A 200 response will be passed with an empty body
+If data has not been sent yet (ex: res.send, res.json etc. (defined below) has not been called) A 200 response will be passed with an empty body
 
 > > **Type:** Function
 >
@@ -835,7 +835,7 @@ If data has not been send yet (ex: res.send, res.json ect. (defined below) has n
 >
 > **Param 'Body':**  Return this Object to serverless
 >
-> **Prams 'statusCode' (Optinal):** Set the http response code, Defualts to 200  
+> **Prams 'statusCode' (Optional):** Set the http response code, Defualts to 200  
 >
 > **Returns:** Object with function end() to stop any future before()s, plugins, or the main callback
 >
@@ -857,7 +857,7 @@ fulfill the lamba function with a string (such as html)
 
 ## res.error(Javacript Error) *OR* res.error(Object)
 
-fulfill the lamba function with an JS Thrown Error or Object;
+fulfill the lamba function with a JS Thrown Error or Object;
 
 if Thrown Error is past serverless will be called back with json body
 
@@ -866,7 +866,7 @@ if Thrown Error is past serverless will be called back with json body
 
 ```
 
-If an object is past it will return your custom error object as jason body
+If an object is past it will return your custom error object as json body
 
 > **Type:** Function
 >
@@ -888,7 +888,7 @@ If an object is past it will return your custom error object as jason body
 
 ## res.handle(Promise [, Headers])
 
-Waits for proimsie to resolve before fullfilling the response (res.json) or displaying error (res.error)
+Waits for proimsie to resolve before fulfilling the response (res.json) or displaying error (res.error)
 > **Type:** Function
 >
 > **Param 'Promise**':  A JS Promise
@@ -938,7 +938,7 @@ reqRes((req,res)=>{
 ```
 ##### Detailed Example
 
-In this example the minifer will add the db module to both the getTime and postData lambda functions
+In this example the minifier will add the db module to both the getTime and postData lambda functions
 File: /handlers.js
 ```javascript
 //db is scoped outside of the halder logic
@@ -966,7 +966,7 @@ module.exports = {
 As you can see, the getTime function now will have access to db module, because it is scoped to have access to db module in RAW javascript. This is only using one require but may turn this one line function to get a timestamp to require a db module to be loaded in.
 
 Instead require modules inside your handler
-In this example the minifer will add the db module to both the getTime and postData lambda functions
+In this example the minifier will add the db module to both the getTime and postData lambda functions
 File: /handlers.js
 ```javascript
 //let db = require("./db") //remove this and move it to postData
@@ -977,7 +977,7 @@ let getTime = reqRes((req,res)=>{
 }).run
 
 let postData = reqRes((req,res)=>{
-    //scope db into this hanlder
+    //scope db into this handler
 	let db = require("./db")
 	let data = req.body;
     let id = req.path.userID
@@ -995,9 +995,9 @@ module.exports = {
 
 ### Split Logic out of the Handler's Requests/Responses
 This may be obvious, but It is important to think of your lambda functions as independent from an http request/response. This helps in few ways:
-1. Function reusablity. You may have single Lambda that does a single task. but down the road you many need that functionality in another lambda function.
-2. You may want to use your code outside of lambda, or inside a serverless schedule.
-3. improve code readability, its easy to read your handler file if each handler looks almost exactly the same, and with a good folder structure you don't even need to look at your handler file to make changes to your function.
+1. Function reusablity. You may have single Lambda that does a single task. But down the road you many need that functionality in another lambda function.
+2. You may want to use your code outside of lambda or inside a serverless schedule.
+3. Improves code readability. Its easy to read your handler file if each handler looks almost exactly the same. And with a good folder structure you don't even need to look at your handler file to make changes to your function.
 
 Let's take the postData exmaple
 
@@ -1012,7 +1012,7 @@ let postData =reqRes((req,res)=>{
 }).run
 ```
 
-This works but it may get a bit more complex so you split it into a module
+This works but it may get a bit more complex, so you split it into a module
 
 File: src/postData.js
 ```javascript
@@ -1033,12 +1033,12 @@ module.exports = (req,res)=>{
 File: src/handlers.js
 ```javascript
 let postData = reqRes((req,res)=>{
-    //scope postData inside this hanlder
+    //scope postData inside this handler
 	let dbPost = require("./postData")
 	dbPost(req,res)
 }).run
 ```
-Well, This still works and our handler is very simple! But... to call the db function we are dependent on the req and res variables we passed.If we need to call this outside of an http request, we need to fake the req,res functions, which isn't a great workaround.
+Well, This still works and our handler is very simple! But... to call the db function we are dependent on the req and res variables we passed. If we need to call this outside of an http request, we need to fake the req,res functions, which isn't a great workaround.
 
 Instead Use the handler to validate paramiters (if needed) and send the paramiters to the lambda independent function
 
@@ -1058,7 +1058,7 @@ let postData = reqRes((req,res)=>{
 	let db = require("./postData")
     //pass variables not req,res
 	db(req.path.id,req.body)
-    	.then(res.json)//then handel the response
+    	.then(res.json)//then handle the response
         .catch(res.error)
 }).run
 ```
@@ -1066,7 +1066,7 @@ let postData = reqRes((req,res)=>{
 This example was a overly simplistic, but, Now we can use ```let db = require("./postData")``` any way we want. This also helps "black box" functions to be used by anyone on a team and without using serverless http events. And with a good folder structure we easily know where to go to fix an issue or add a feature.
 
 ### ReqRes Global Plugins
-If your are using ReqRes global plugins,  it is recommended to create a custom ReqRes module to include in all handler files. This makes it easier to modify your plugins and inclued a single module into multiple handler files.
+If your are using ReqRes global plugins,  it is recommended to create a custom ReqRes module to include in all handler files. This makes it easier to modify your plugins and include a single module into multiple handler files.
 
 **Your ReqRes module** EX: YOUR_PROJECT/src/libs/ReqRes/index.js
 ```javascript
@@ -1101,7 +1101,7 @@ module.exports = reqResHandler.run;
 
 To keep your Lambda instance hot and reduce slow cold startups you can add ReqRes_KEEP_HOT:true as in input in a schedule for your function
 
-When ReqRes_KEEP_HOT is true, ReqRes will not run any of your code but will exit as soon (under the Lambda's 100ms minimum charge time) as possible with a 200 json response of:
+When ReqRes_KEEP_HOT is true, ReqRes will not run any of your code but will exit as soon as possible (under the Lambda's 100ms minimum charge time) with a 200 json response of:
 
 ```
 {
